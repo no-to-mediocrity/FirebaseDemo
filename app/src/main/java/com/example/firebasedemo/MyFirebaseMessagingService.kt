@@ -9,7 +9,6 @@ import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -35,7 +34,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(){
     fun generateNotification(title:String, message:String) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_IMMUTABLE)
         var builder:NotificationCompat.Builder = NotificationCompat.Builder(applicationContext,
             channelId).setSmallIcon(R.drawable.wolf)
             .setAutoCancel(true)
@@ -48,6 +47,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(){
             val notificationChannel = NotificationChannel(channelId, channelName,NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(notificationChannel)
         }
-        notificationManager.notify(0,builder.build())
+        val notificationId = System.currentTimeMillis().toInt()
+        notificationManager.notify(notificationId,builder.build())
     }
 }
